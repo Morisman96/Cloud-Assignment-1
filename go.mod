@@ -1,3 +1,3 @@
-module Cloud-Assignment-1
+module Assignment1
 
 go 1.19
