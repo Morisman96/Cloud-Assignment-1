@@ -10,6 +10,6 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/librarystats", api.GetGutendex)
+	http.HandleFunc("/librarystats", api.HandlerGetGutendex)
 	log.Fatal(http.ListenAndServe(":"+utils.PORT, nil))
 }

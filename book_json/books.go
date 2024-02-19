@@ -12,7 +12,7 @@ import (
 type BookLanguage struct {
 	Language     string  `json:"languages"`
 	Books        int     `json:"count"`
-	TotalAuthors int     `json:"totalAuthors"`
+	TotalAuthors int     `json:"authors"`
 	Fraction     float32 `json:"fraction"`
 }
 
@@ -23,17 +23,29 @@ type BookLangReaders struct {
 	Authors    int
 	Readership int
 }
-
-type GuntendexResult struct {
-	Next      string   `json:"next"`
-	Previous  string   `json:"previous"`
-	BookCount int      `json:"count"`
-	Books     []Result `json:"results"`
+type GutendexListResult struct {
+	Results []GutendexResult `json:"results"`
 }
 
-type Result struct {
-	Authors   []Author `json:"authors"`
-	Languages []string `json:"languages"`
+func newGutendexListResult() *GutendexListResult {
+	gutendexListResult := new(GutendexListResult)
+	return gutendexListResult
+}
+
+type GutendexResult struct {
+	Next      string        `json:"next"`
+	Previous  string        `json:"previous"`
+	Books     []AuthorsList `json:"results"`
+	BookCount int           `json:"count"`
+}
+
+type AuthorsList struct {
+	AuthorsList []Author `json:"authors"`
+}
+
+func newAllAuthorsList() *AuthorsList {
+	authorsList := new(AuthorsList)
+	return authorsList
 }
 
 type TotalBooksCount struct {
