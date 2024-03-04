@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func GetGutendexTotalBooks(rw http.ResponseWriter) int {
@@ -27,22 +28,35 @@ func GetGutendexTotalBooks(rw http.ResponseWriter) int {
 
 func HandlerGetGutendex(rw http.ResponseWriter, r *http.Request) {
 	languageCode := r.URL.Query().Get("languages")
+
 	if languageCode == "" {
 		fmt.Println("no language code found in query")
+	} else {
+		CreateResults(rw, languageCode)
 	}
-	resultList := new(book_json.GutendexListResult)
-	authorList := new(book_json.AuthorsList)
-	GetGuntendex(rw, utils.GutendexAPI+"?languages="+languageCode, resultList, authorList)
 
-	var books = book_json.BookLanguage{languageCode, resultList.Results[0].BookCount, utils.CountAuthors(authorList), utils.FracBooks(resultList.Results[0], GetGutendexTotalBooks(rw))}
+}
+
+func PostGutenDex(rw http.ResponseWriter, resultBookLanguage book_json.BookLanguage) {
 	rw.Header().Set("Books", utils.BOOKCOUNTPATH)
-	err := json.NewEncoder(rw).Encode(books)
+	err := json.NewEncoder(rw).Encode(resultBookLanguage)
 	if err != nil {
 		http.Error(rw, "Error during JSON encoding (Error: "+err.Error()+")", http.StatusInternalServerError)
 	}
 }
 
-func GetGuntendex(rw http.ResponseWriter, next string, resultList *book_json.GutendexListResult, authorList *book_json.AuthorsList) {
+func CreateResults(rw http.ResponseWriter, languageCode string) book_json.BookLanguage {
+	resultList := new(book_json.GutendexListResult)
+	authorList := new(book_json.AuthorsList)
+	substrings := strings.Split(languageCode, ",")
+	for _, languageCode := range substrings {
+		GetGutendex(rw, utils.GutendexAPI+"?languages="+languageCode, resultList, authorList)
+	}
+	var books = book_json.BookLanguage{Language: languageCode, Books: resultList.Results[0].BookCount, TotalAuthors: utils.CountAuthors(authorList), Fraction: utils.FracBooks(resultList.Results[0], GetGutendexTotalBooks(rw))}
+	return books
+}
+
+func GetGutendex(rw http.ResponseWriter, next string, resultList *book_json.GutendexListResult, authorList *book_json.AuthorsList) {
 	resp, err := http.Get(next)
 	if err != nil {
 		http.Error(rw, "Failed to get request from Gutendex API", http.StatusBadRequest)
@@ -57,7 +71,6 @@ func GetGuntendex(rw http.ResponseWriter, next string, resultList *book_json.Gut
 	}
 	if guntendexResult.Next != "" {
 		fmt.Println("next: ", guntendexResult.Next)
-		GetGuntendex(rw, guntendexResult.Next, resultList, authorList)
+		GetGutendex(rw, guntendexResult.Next, resultList, authorList)
 	}
-	fmt.Println("List Done")
 }

@@ -17,20 +17,22 @@ type BookLanguage struct {
 }
 
 type BookLangReaders struct {
-	Country    string
-	IsoCode    int
-	Books      int
-	Authors    int
-	Readership int
+	Country    string `json:"Official_Name"`
+	IsoCode    string `json:"ISO3166_1_Alpha_2"`
+	Books      int    `json:"count"`
+	Authors    int    `json:"authors"`
+	Readership int    `json:"population"`
 }
 type GutendexListResult struct {
 	Results []GutendexResult `json:"results"`
 }
 
+/*
 func newGutendexListResult() *GutendexListResult {
 	gutendexListResult := new(GutendexListResult)
 	return gutendexListResult
 }
+*/
 
 type GutendexResult struct {
 	Next      string        `json:"next"`
@@ -43,10 +45,12 @@ type AuthorsList struct {
 	AuthorsList []Author `json:"authors"`
 }
 
+/*
 func newAllAuthorsList() *AuthorsList {
 	authorsList := new(AuthorsList)
 	return authorsList
 }
+*/
 
 type TotalBooksCount struct {
 	TotalBooks int `json:"count"`
@@ -54,4 +58,26 @@ type TotalBooksCount struct {
 
 type Author struct {
 	Author string `json:"name"`
+}
+
+type Language2Countries struct {
+	Country    string `json:"Official_Name"`
+	IsoCode    string `json:"ISO3166_1_Alpha_2"`
+	Readership int    `json:"population"`
+}
+
+type RestCountry struct {
+	Population int `json:"population"`
+}
+
+type Language2CountriesList struct {
+	CountriesList []Language2Countries `json:"countries"`
+}
+
+type BookLangReadersList struct {
+	ReaderList []BookLangReaders `json:"readrship"`
+}
+
+func UpdateReadership(Language2Countries *Language2Countries, population int) {
+	Language2Countries.Readership = population
 }

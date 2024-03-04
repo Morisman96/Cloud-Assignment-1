@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/librarystats", api.HandlerGetGutendex)
+
+	http.HandleFunc("/librarystats", api.HandlerGetLanguage2countries)
 	log.Fatal(http.ListenAndServe(":"+utils.PORT, nil))
 }

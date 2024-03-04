@@ -8,7 +8,7 @@ const Language2CountriesAPI = "http://129.241.150.113:3000/language2countries/"
 
 const GutendexAPI = "http://129.241.150.113:8000/books"
 
-const RESTCountriesAPI = "http://129.241.150.113:8080/v3.1"
+const RESTCountriesAPI = "http://129.241.150.113:8080/v3.1/name/"
 
 const BOOKCOUNTPATH = "/librarystats/v1/bookcount/"
 

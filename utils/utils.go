@@ -17,6 +17,10 @@ func CountAuthors(result *book_json.AuthorsList) int {
 
 	}
 	fmt.Println(len(occurrence))
+	for k, v := range occurrence {
+		fmt.Println(k, v)
+
+	}
 	return len(occurrence)
 }
 
