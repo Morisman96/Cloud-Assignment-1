@@ -11,6 +11,7 @@ import (
 
 func main() {
 
-	http.HandleFunc("/librarystats", api.HandlerGetLanguage2countries)
-	log.Fatal(http.ListenAndServe(":"+utils.PORT, nil))
+	http.HandleFunc(utils.READERSHIPPATH, api.HandlerGetLanguage2countries)
+	http.HandleFunc("/librarystats/v1/bookcount/", api.HandlerGetGutendex)
+	log.Fatal(http.ListenAndServe(utils.PORT, nil))
 }

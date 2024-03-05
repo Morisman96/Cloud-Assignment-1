@@ -3,6 +3,7 @@ package utils
 import (
 	"Assignment1/book_json"
 	"fmt"
+	"strings"
 )
 
 func CountAuthors(result *book_json.AuthorsList) int {
@@ -26,4 +27,20 @@ func CountAuthors(result *book_json.AuthorsList) int {
 
 func FracBooks(result book_json.GutendexResult, totalBooks int) float32 {
 	return float32(result.BookCount) / float32(totalBooks)
+}
+
+func LanguageCode(url string) string {
+
+	pathSegments := strings.Split(url, "/")
+
+	// Iterate over path segments to find the language code
+	var languageCode string
+	for i, segment := range pathSegments {
+		if segment == "readership" && i+1 < len(pathSegments) {
+			// The language code is the next segment after "librarystats"
+			languageCode = pathSegments[i+1]
+			break
+		}
+	}
+	return languageCode
 }
