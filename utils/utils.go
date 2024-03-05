@@ -2,8 +2,8 @@ package utils
 
 import (
 	"Assignment1/book_json"
-	"fmt"
 	"strings"
+	"time"
 )
 
 func CountAuthors(result *book_json.AuthorsList) int {
@@ -15,11 +15,6 @@ func CountAuthors(result *book_json.AuthorsList) int {
 		occurrence[author] = true
 
 		// Return the count of unique elements return len(occurrence)
-
-	}
-	fmt.Println(len(occurrence))
-	for k, v := range occurrence {
-		fmt.Println(k, v)
 
 	}
 	return len(occurrence)
@@ -43,4 +38,8 @@ func LanguageCode(url string) string {
 		}
 	}
 	return languageCode
+}
+
+func InitTimer() {
+	Timer = time.Now() // Initialize the start time when the program starts
 }

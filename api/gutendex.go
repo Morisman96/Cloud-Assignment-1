@@ -32,7 +32,7 @@ func HandlerGetGutendex(rw http.ResponseWriter, r *http.Request) {
 	if languageCode == "" {
 		fmt.Println("no language code found in query")
 	} else {
-		CreateResults(rw, languageCode)
+		PostGutenDex(rw, CreateResults(rw, languageCode))
 	}
 
 }

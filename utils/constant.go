@@ -1,6 +1,10 @@
 package utils
 
-const LINEBREAK = "\n"
+import "time"
+
+var Timer time.Time
+
+const VERSION = "v1"
 
 const PORT = ":8080"
 

@@ -7,6 +7,7 @@ import (
 	_ "net/http"
 	_ "os"
 	_ "strconv"
+	"time"
 )
 
 type BookLanguage struct {
@@ -80,4 +81,12 @@ type BookLangReadersList struct {
 
 func UpdateReadership(Language2Countries *Language2Countries, population int) {
 	Language2Countries.Readership = population
+}
+
+type Status struct {
+	GutendexApi           string        `json:"gutendexapi"`
+	Language2countriesApi string        `json:"languageapi"`
+	RestCountriesApi      string        `json:"countriesapi"`
+	Version               string        `json:"version"`
+	Uptime                time.Duration `json:"uptime"`
 }

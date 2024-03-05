@@ -9,9 +9,12 @@ import (
 	"net/http"
 )
 
-func main() {
+// Variable to store the start time
 
+func main() {
+	utils.InitTimer()
+	http.HandleFunc(utils.STATUSPATH, api.PostStatus)
 	http.HandleFunc(utils.READERSHIPPATH, api.HandlerGetLanguage2countries)
-	http.HandleFunc("/librarystats/v1/bookcount/", api.HandlerGetGutendex)
+	http.HandleFunc(utils.BOOKCOUNTPATH, api.HandlerGetGutendex)
 	log.Fatal(http.ListenAndServe(utils.PORT, nil))
 }
