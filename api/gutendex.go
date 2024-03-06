@@ -1,7 +1,7 @@
 package api
 
 import (
-	"Assignment1/book_json"
+	"Assignment1/structs"
 	"Assignment1/utils"
 	"encoding/json"
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// GetGutendexTotalBooks gets the total amount of books in gutendex from the Gutendex API
 func GetGutendexTotalBooks(rw http.ResponseWriter) int {
 	resp, err := http.Get(utils.GutendexAPI)
 	if err != nil {
@@ -19,25 +20,29 @@ func GetGutendexTotalBooks(rw http.ResponseWriter) int {
 	if err != nil {
 		fmt.Println("Error: could not read json file", err)
 	}
-	var totalBooksCount book_json.TotalBooksCount
+	var totalBooksCount structs.TotalBooksCount
 	if err := decoder.Decode(&totalBooksCount); err != nil {
 		fmt.Println("Error: could not encode json file", err)
 	}
 	return totalBooksCount.TotalBooks
 }
 
+// HandlerGetGutendex handles the /gutendex endpoint
 func HandlerGetGutendex(rw http.ResponseWriter, r *http.Request) {
 	languageCode := r.URL.Query().Get("languages")
 
 	if languageCode == "" {
 		fmt.Println("no language code found in query")
 	} else {
-		PostGutenDex(rw, CreateResults(rw, languageCode))
+		for _, languageCode := range strings.Split(languageCode, ",") {
+			PostGutenDex(rw, StructResults(rw, languageCode))
+		}
 	}
 
 }
 
-func PostGutenDex(rw http.ResponseWriter, resultBookLanguage book_json.BookLanguage) {
+// PostGutenDex posts the results of the books in the given language code
+func PostGutenDex(rw http.ResponseWriter, resultBookLanguage structs.BookLanguage) {
 	rw.Header().Set("Books", utils.BOOKCOUNTPATH)
 	err := json.NewEncoder(rw).Encode(resultBookLanguage)
 	if err != nil {
@@ -45,23 +50,24 @@ func PostGutenDex(rw http.ResponseWriter, resultBookLanguage book_json.BookLangu
 	}
 }
 
-func CreateResults(rw http.ResponseWriter, languageCode string) book_json.BookLanguage {
-	resultList := new(book_json.GutendexListResult)
-	authorList := new(book_json.AuthorsList)
-	substrings := strings.Split(languageCode, ",")
-	for _, languageCode := range substrings {
-		GetGutendex(rw, utils.GutendexAPI+"?languages="+languageCode, resultList, authorList)
-	}
-	var books = book_json.BookLanguage{Language: languageCode, Books: resultList.Results[0].BookCount, TotalAuthors: utils.CountAuthors(authorList), Fraction: utils.FracBooks(resultList.Results[0], GetGutendexTotalBooks(rw))}
+// StructResults creates a new BookLanguage struct
+func StructResults(rw http.ResponseWriter, languageCode string) structs.BookLanguage {
+	resultList := new(structs.GutendexListResult)
+	authorList := new(structs.AuthorsList)
+
+	GetGutendex(rw, utils.GutendexAPI+"?languages="+languageCode, resultList, authorList)
+
+	var books = structs.BookLanguage{Language: languageCode, Books: resultList.Results[0].BookCount, TotalAuthors: utils.CountAuthors(authorList), Fraction: utils.FracBooks(resultList.Results[0], GetGutendexTotalBooks(rw))}
 	return books
 }
 
-func GetGutendex(rw http.ResponseWriter, next string, resultList *book_json.GutendexListResult, authorList *book_json.AuthorsList) {
+// GetGutendex gets the books from the Gutendex API
+func GetGutendex(rw http.ResponseWriter, next string, resultList *structs.GutendexListResult, authorList *structs.AuthorsList) {
 	resp, err := http.Get(next)
 	if err != nil {
 		http.Error(rw, "Failed to get request from Gutendex API", http.StatusBadRequest)
 	}
-	var guntendexResult book_json.GutendexResult
+	var guntendexResult structs.GutendexResult
 	if err := json.NewDecoder(resp.Body).Decode(&guntendexResult); err != nil {
 		log.Fatalf("Error decoding JSON response: %v", err)
 	}
@@ -70,7 +76,6 @@ func GetGutendex(rw http.ResponseWriter, next string, resultList *book_json.Gute
 		authorList.AuthorsList = append(authorList.AuthorsList, book.AuthorsList...)
 	}
 	if guntendexResult.Next != "" {
-		fmt.Println("next: ", guntendexResult.Next)
 		GetGutendex(rw, guntendexResult.Next, resultList, authorList)
 	}
 }

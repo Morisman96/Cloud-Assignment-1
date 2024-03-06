@@ -1,4 +1,4 @@
-package book_json
+package structs
 
 import (
 	_ "encoding/json"
@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// BookLang
 type BookLanguage struct {
 	Language     string  `json:"languages"`
 	Books        int     `json:"count"`
@@ -79,10 +80,12 @@ type BookLangReadersList struct {
 	ReaderList []BookLangReaders `json:"readrship"`
 }
 
+// UpdateReadership updates the readership variable
 func UpdateReadership(Language2Countries *Language2Countries, population int) {
 	Language2Countries.Readership = population
 }
 
+// Status struct for status of the service
 type Status struct {
 	GutendexApi           string        `json:"gutendexapi"`
 	Language2countriesApi string        `json:"languageapi"`

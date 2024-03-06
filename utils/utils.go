@@ -1,38 +1,31 @@
 package utils
 
 import (
-	"Assignment1/book_json"
+	"Assignment1/structs"
 	"strings"
 	"time"
 )
 
-func CountAuthors(result *book_json.AuthorsList) int {
-	occurrence := make(map[book_json.Author]bool)
-
-	// Iterate through the list and mark each element as true in the map
+// CountAuthors returns the number of unique authors
+func CountAuthors(result *structs.AuthorsList) int {
+	occurrence := make(map[structs.Author]bool) // map to store authors as keys and boolean as value
 	for _, author := range result.AuthorsList {
-
 		occurrence[author] = true
-
-		// Return the count of unique elements return len(occurrence)
-
 	}
 	return len(occurrence)
 }
 
-func FracBooks(result book_json.GutendexResult, totalBooks int) float32 {
+// FracBooks returns the fraction of books in a language
+func FracBooks(result structs.GutendexResult, totalBooks int) float32 {
 	return float32(result.BookCount) / float32(totalBooks)
 }
 
+// LanguageCode returns the language code from the URL path
 func LanguageCode(url string) string {
-
 	pathSegments := strings.Split(url, "/")
-
-	// Iterate over path segments to find the language code
 	var languageCode string
 	for i, segment := range pathSegments {
 		if segment == "readership" && i+1 < len(pathSegments) {
-			// The language code is the next segment after "librarystats"
 			languageCode = pathSegments[i+1]
 			break
 		}
@@ -40,6 +33,7 @@ func LanguageCode(url string) string {
 	return languageCode
 }
 
+// InitTimer initializes the Timer variable
 func InitTimer() {
-	Timer = time.Now() // Initialize the start time when the program starts
+	Timer = time.Now()
 }

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"Assignment1/book_json"
+	"Assignment1/structs"
 	"Assignment1/utils"
 	"encoding/json"
 	"net/http"
@@ -9,24 +9,28 @@ import (
 	"time"
 )
 
-func StructStatus() book_json.Status {
-	return book_json.Status{GutendexApi: GetStatus(utils.GutendexAPI), Language2countriesApi: GetStatus(utils.Language2CountriesAPI + "no"), RestCountriesApi: GetStatus(utils.RESTCountriesAPI + "norway"), Version: utils.VERSION, Uptime: time.Duration(time.Since(utils.Timer).Seconds())}
+// StructStatus creates a new status struct
+func StructStatus() structs.Status {
+	return structs.Status{
+		GutendexApi:           GetStatus(utils.GutendexAPI),
+		Language2countriesApi: GetStatus(utils.Language2CountriesAPI + utils.STATUSLANGUAGE2COUNTRIESQUERY),
+		RestCountriesApi:      GetStatus(utils.RESTCountriesAPI + utils.STATUSRESTCOUNTRIESQUERY),
+		Version:               utils.VERSION,
+		Uptime:                time.Duration(time.Since(utils.Timer).Seconds())}
 }
-func GetStatus(api string) string {
 
+// GetStatus gets the status of an API
+func GetStatus(api string) string {
 	resp, err := http.Get(api)
 	if err != nil {
-		// Handle connection errors
+		http.Error(nil, "Failed to get request from API", http.StatusBadRequest)
 	}
 	defer resp.Body.Close()
-
-	// Convert status code to string
 	statusCodeStr := strconv.Itoa(resp.StatusCode)
-
-	// Return status code as string
 	return statusCodeStr
 }
 
+// PostStatus posts the status of the API's
 func PostStatus(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Status", utils.STATUSPATH)
 	err := json.NewEncoder(rw).Encode(StructStatus())
