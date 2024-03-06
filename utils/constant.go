@@ -24,3 +24,7 @@ const REGEXPOSETIVINTEGER = "^[1-9]\\d*$" // Regex for positive integers
 
 const STATUSLANGUAGE2COUNTRIESQUERY = "no" // Query for language2countries to check if the service is up
 const STATUSRESTCOUNTRIESQUERY = "norway"  // Query for restcountries to check if the service is up
+
+const GUTENDEXCASE = "129.241.150.113:8000"
+const LANGUAGE2COUNTRIESCASE = "129.241.150.113:3000"
+const RESTCOUNTRIESCASE = "129.241.150.113:8080"

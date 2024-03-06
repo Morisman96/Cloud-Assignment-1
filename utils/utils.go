@@ -2,6 +2,8 @@ package utils
 
 import (
 	"Assignment1/structs"
+	"net"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -20,12 +22,12 @@ func FracBooks(result structs.GutendexResult, totalBooks int) float32 {
 	return float32(result.BookCount) / float32(totalBooks)
 }
 
-// LanguageCode returns the language code from the URL path
-func LanguageCode(url string) string {
+// GetUrlPath returns the next path after the given path from the URL
+func GetUrlPath(url string, path string) string {
 	pathSegments := strings.Split(url, "/")
 	var languageCode string
 	for i, segment := range pathSegments {
-		if segment == "readership" && i+1 < len(pathSegments) {
+		if segment == path && i+1 < len(pathSegments) {
 			languageCode = pathSegments[i+1]
 			break
 		}
@@ -36,4 +38,22 @@ func LanguageCode(url string) string {
 // InitTimer initializes the Timer variable
 func InitTimer() {
 	Timer = time.Now()
+}
+
+func ExtractHostAndPort(urlStr string) (string, error) {
+	// Parse the URL
+	u, err := url.Parse(urlStr)
+	if err != nil {
+		return "", err
+	}
+
+	// Split the host and port
+	host, port, err := net.SplitHostPort(u.Host)
+	if err != nil {
+
+	}
+
+	hostPort := net.JoinHostPort(host, port)
+
+	return hostPort, nil
 }

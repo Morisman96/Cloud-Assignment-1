@@ -3,7 +3,7 @@ package api
 import (
 	"Assignment1/structs"
 	"Assignment1/utils"
-	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -25,16 +25,16 @@ func GetStatus(api string) string {
 	if err != nil {
 		http.Error(nil, "Failed to get request from API", http.StatusBadRequest)
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 	statusCodeStr := strconv.Itoa(resp.StatusCode)
 	return statusCodeStr
 }
 
-// PostStatus posts the status of the API's
-func PostStatus(rw http.ResponseWriter, r *http.Request) {
-	rw.Header().Set("Status", utils.STATUSPATH)
-	err := json.NewEncoder(rw).Encode(StructStatus())
-	if err != nil {
-		http.Error(rw, "Error during JSON encoding (Error: "+err.Error()+")", http.StatusInternalServerError)
-	}
+func HandlerStatus(rw http.ResponseWriter, r *http.Request) {
+	utils.PostResponse(rw, StructStatus(), "Status")
 }

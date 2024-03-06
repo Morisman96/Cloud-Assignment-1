@@ -45,7 +45,7 @@ func GetRestCountries(rw http.ResponseWriter, list *[]*structs.Language2Countrie
 
 // HandlerGetLanguage2countries handles the /language2countries endpoint
 func HandlerGetLanguage2countries(rw http.ResponseWriter, r *http.Request) {
-	languageCode := utils.LanguageCode(r.URL.String())
+	languageCode := utils.GetUrlPath(r.URL.String(), "readership")
 	if languageCode == "" && languageCode == "v1" {
 		http.Error(rw, "no language code found in query", http.StatusBadRequest)
 	} else {

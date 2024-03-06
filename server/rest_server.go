@@ -2,19 +2,21 @@ package server
 
 import (
 	"fmt"
+	_ "github.com/russross/blackfriday/v2"
 	"net/http"
 	"os"
 )
 
-// HomePage takes the README.md file and writes it to homepage
+// HomePage takes the HomePage.html file and writes it to homepage
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	markdown, err := os.ReadFile("README.md")
+
+	content, err := os.ReadFile("HomePage.html")
 	if err != nil {
-		fmt.Println("Error reading README.md:", err)
+		fmt.Println("Error reading file:", err)
 		return
 	}
-	_, err = w.Write(markdown)
+	_, err = w.Write(content)
 	if err != nil {
-		return
+		http.Error(w, "Error failed to write the home page", http.StatusInternalServerError)
 	}
 }
