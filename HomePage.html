@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud-Assignment-1</title>
+</head>
+<body>
+
+<h1>Cloud-Assignment-1</h1>
+
+<h2>Description</h2>
+<p>This REST web application provides the information about books available in a given language based on the Gutenberg library. The service also determines the number of potential readers presumed to be able to read books in that language. It integrates with three external APIs: Gutendex API, Language2Countries API, and REST Countries API.</p>
+
+<h3>Table of Contents</h3>
+<ol>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#endpoints">Endpoints</a></li>
+</ol>
+
+<h2 id="usage">Usage</h2>
+<p>The API is deployed and accessible at the following URL: <a href="https://cloud-assignment-1-9yeu.onrender.com/">https://cloud-assignment-1-9yeu.onrender.com/</a>.</p>
+
+<h2 id="endpoints">Endpoints</h2>
+<p>The API provides the following endpoints:</p>
+
+<h3>Bookcount</h3>
+<p><code>/librarystats/v1/bookcount/?language={:two_letter_language_code+}/</code><br>
+    Returns book count for a given language(s) code.</p>
+<p>It will return the following JSON response:</p>
+<pre><code>{
+ "languages": "&lt;two letter language code&gt;",
+ "count": "&lt;number of books in that language&gt;",
+ "authors": "&lt;number of authors for the books in that language&gt;",
+ "fraction": "&lt;fraction that indicates how much of the books in the given language contribute to the total number of books available in Gutendex&gt;"
+}
+</code></pre>
+<p>Example:</p>
+<pre><code>{
+ "languages": "no",
+ "count": 21,
+ "authors": 16,
+ "fraction": 0.0002877974
+},
+{
+"languages": "sv",
+"count": 230,
+"authors": 139,
+"fraction": 0.0031520666
+}
+</code></pre>
+
+<h3>Readership</h3>
+<p><code>/librarystats/v1/readership/{:two_letter_language_code}/{?limit={:number}}/</code><br>
+    Returns the number of potential readers for a given language code and an optional limit for how many countries to return.</p>
+<p>It will return the following JSON response:</p>
+<pre><code>[
+  {
+    "Official_Name": "&lt;official name of the country&gt;",
+    "ISO3166_1_Alpha_2": "&lt;two letter country code&gt;",
+    "count": "&lt;number of books in that language&gt;",
+    "authors": "&lt;number of authors for the books in that language&gt;",
+    "population": "&lt;population of the country&gt;"
+  }
+]
+</code></pre>
+<p>Example:</p>
+<pre><code>[
+ {
+  "Official_Name": "Iceland",
+  "ISO3166_1_Alpha_2": "IS",
+  "count": 21,
+  "authors": 16,
+  "population": 366425
+ },
+ {
+  "Official_Name": "Norway",
+  "ISO3166_1_Alpha_2": "NO",
+  "count": 21,
+  "authors": 16,
+  "population": 5379475
+ },
+ {
+  "Official_Name": "Svalbard and Jan Mayen Islands",
+  "ISO3166_1_Alpha_2": "SJ",
+  "count": 21,
+  "authors": 16,
+  "population": 2562
+ }
+]
+</code></pre>
+
+<h3>Diagnostics</h3>
+<p><code>/librarystats/v1/status/</code><br>
+    Provides a status overview of services.</p>
+<p>It will return the following JSON response:</p>
+<pre><code>{
+  "gutendexapi": "&lt;http status code for gutendex API&gt;",
+  "languageapi": "&lt;http status code for language2countries API&gt;" ,
+  "countriesapi": "&lt;http status code for restcountries API&gt;",
+  "version": "version of the api",
+  "uptime": ",&lt;time in seconds from the last service restart&gt;"
+}
+</code></pre>
+<p>Example:</p>
+<pre><code>{
+  "gutendexapi": "200",
+  "languageapi": "200",
+  "countriesapi": "200",
+  "version": "v1",
+  "uptime": 60
+}
+</code></pre>
+
+</body>
+</html>
