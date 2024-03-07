@@ -15,34 +15,47 @@ func GetGutendexTotalBooks(rw http.ResponseWriter) int {
 
 // HandlerGetGutendex handles the /bookcount endpoint
 func HandlerGetGutendex(rw http.ResponseWriter, r *http.Request) {
-	languageCode := r.URL.Query().Get("languages")
+	languageCode := r.URL.Query().Get("language")
 	if languageCode == "" {
 		http.Error(rw, "no language code found in query", http.StatusBadRequest)
 	} else {
+		var bookList []structs.BookLanguage
 		for _, languageCode := range strings.Split(languageCode, ",") {
-			utils.PostResponse(rw, StructResults(rw, languageCode), "Bookcount")
+			var book = StructResults(rw, languageCode)
+			if book.Books != 0 && book.TotalAuthors != 0 && book.Fraction != 0 {
+				bookList = append(bookList, book)
+			}
 		}
+		utils.PostResponse(rw, bookList, "Bookcount")
 	}
 
 }
 
 // StructResults creates a new BookLanguage struct
 func StructResults(rw http.ResponseWriter, languageCode string) structs.BookLanguage {
-	resultList := new(structs.GutendexListResult)
+	resultList := new([]structs.GutendexResult)
 	authorList := new(structs.AuthorsList)
 	GetGutendex(rw, utils.GutendexAPI+"?languages="+languageCode, resultList, authorList)
-	var books = structs.BookLanguage{Language: languageCode, Books: resultList.Results[0].BookCount, TotalAuthors: utils.CountAuthors(authorList), Fraction: utils.FracBooks(resultList.Results[0], GetGutendexTotalBooks(rw))}
+	var books = structs.BookLanguage{
+		Language:     languageCode,
+		Books:        (*resultList)[0].BookCount,
+		TotalAuthors: utils.CountAuthors(authorList),
+		Fraction:     utils.FracBooks((*resultList)[0], GetGutendexTotalBooks(rw))}
 	return books
+
 }
 
 // GetGutendex gets the books from the Gutendex API
-func GetGutendex(rw http.ResponseWriter, query string, resultList *structs.GutendexListResult, authorList *structs.AuthorsList) {
-	var guntendexResult = utils.GetResponse(rw, query).(structs.GutendexResult)
-	resultList.Results = append(resultList.Results, guntendexResult)
-	for _, book := range guntendexResult.Books {
-		authorList.AuthorsList = append(authorList.AuthorsList, book.AuthorsList...)
-	}
-	if guntendexResult.Next != "" {
-		GetGutendex(rw, guntendexResult.Next, resultList, authorList)
+func GetGutendex(rw http.ResponseWriter, query string, resultList *[]structs.GutendexResult, authorList *structs.AuthorsList) {
+	var gutendexResult = utils.GetResponse(rw, query)
+	if gutendexResult != nil || gutendexResult != "" {
+		result := gutendexResult.(structs.GutendexResult)
+		*resultList = append(*resultList, result)
+		for _, book := range result.Books {
+			authorList.AuthorsList = append(authorList.AuthorsList, book.AuthorsList...)
+		}
+		if result.Next != "" {
+			GetGutendex(rw, result.Next, resultList, authorList)
+		}
 	}
 }

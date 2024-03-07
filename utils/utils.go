@@ -40,20 +40,17 @@ func InitTimer() {
 	Timer = time.Now()
 }
 
+// ExtractHostAndPort extracts the host and port from a URL, returns the host and port as a string
 func ExtractHostAndPort(urlStr string) (string, error) {
 	// Parse the URL
 	u, err := url.Parse(urlStr)
 	if err != nil {
 		return "", err
 	}
-
-	// Split the host and port
 	host, port, err := net.SplitHostPort(u.Host)
 	if err != nil {
-
+		return "", err
 	}
-
 	hostPort := net.JoinHostPort(host, port)
-
 	return hostPort, nil
 }

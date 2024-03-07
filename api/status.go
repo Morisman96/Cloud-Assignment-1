@@ -3,7 +3,6 @@ package api
 import (
 	"Assignment1/structs"
 	"Assignment1/utils"
-	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -25,16 +24,11 @@ func GetStatus(api string) string {
 	if err != nil {
 		http.Error(nil, "Failed to get request from API", http.StatusBadRequest)
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
-	}(resp.Body)
 	statusCodeStr := strconv.Itoa(resp.StatusCode)
 	return statusCodeStr
 }
 
+// HandlerStatus handles the /status endpoint
 func HandlerStatus(rw http.ResponseWriter, r *http.Request) {
 	utils.PostResponse(rw, StructStatus(), "Status")
 }

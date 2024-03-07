@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// BookLang
+// BookLanguage struct for the bookcount
 type BookLanguage struct {
 	Language     string  `json:"languages"`
 	Books        int     `json:"count"`
@@ -18,6 +18,7 @@ type BookLanguage struct {
 	Fraction     float32 `json:"fraction"`
 }
 
+// BookLangReaders	struct for the readership
 type BookLangReaders struct {
 	Country    string `json:"Official_Name"`
 	IsoCode    string `json:"ISO3166_1_Alpha_2"`
@@ -25,17 +26,8 @@ type BookLangReaders struct {
 	Authors    int    `json:"authors"`
 	Readership int    `json:"population"`
 }
-type GutendexListResult struct {
-	Results []GutendexResult `json:"results"`
-}
 
-/*
-func newGutendexListResult() *GutendexListResult {
-	gutendexListResult := new(GutendexListResult)
-	return gutendexListResult
-}
-*/
-
+// GutendexResult struct for the Gutendex API
 type GutendexResult struct {
 	Next      string        `json:"next"`
 	Previous  string        `json:"previous"`
@@ -43,46 +35,31 @@ type GutendexResult struct {
 	BookCount int           `json:"count"`
 }
 
+// AuthorsList struct for the GutendexResult
 type AuthorsList struct {
 	AuthorsList []Author `json:"authors"`
 }
 
-/*
-func newAllAuthorsList() *AuthorsList {
-	authorsList := new(AuthorsList)
-	return authorsList
-}
-*/
-
-type TotalBooksCount struct {
-	TotalBooks int `json:"count"`
-}
-
+// Author struct for the AuthorsList
 type Author struct {
 	Author string `json:"name"`
 }
 
+// Language2Countries struct for the Language2Countries API
 type Language2Countries struct {
 	Country    string `json:"Official_Name"`
 	IsoCode    string `json:"ISO3166_1_Alpha_2"`
 	Readership int    `json:"population"`
 }
 
+// RestCountry struct for the RestCountries API to get the population
 type RestCountry struct {
 	Population int `json:"population"`
 }
 
-type Language2CountriesList struct {
-	CountriesList []Language2Countries `json:"countries"`
-}
-
-type BookLangReadersList struct {
-	ReaderList []BookLangReaders `json:"readrship"`
-}
-
 // UpdateReadership updates the readership variable
-func UpdateReadership(Language2Countries *Language2Countries, population int) {
-	Language2Countries.Readership = population
+func UpdateReadership(Language2Countries []Language2Countries, population int, index int) {
+	Language2Countries[index].Readership = population
 }
 
 // Status struct for status of the service
